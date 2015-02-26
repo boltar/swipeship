@@ -2,10 +2,7 @@ package com.boltarstudios.swipeship;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -22,6 +19,9 @@ import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.TimeUtils;
@@ -78,8 +78,10 @@ public class SwipeShipMain implements ApplicationListener {
 
 	public int i;
 
-
 	Preferences prefs;
+    private boolean isPaused = false;
+
+    private Skin skin;
 
 	private final Pool<StellarObject> nebulaPool = new Pool<StellarObject>() {
 		@Override
@@ -194,13 +196,50 @@ public class SwipeShipMain implements ApplicationListener {
 
 	private void loadSavedData() {
 		prefs = Gdx.app.getPreferences("My Preferences");
-		currentSector = prefs.getInteger("currentSector, 0");
+		currentSector = prefs.getInteger("currentSector", 0);
 		distanceToGo = prefs.getFloat("distanceToGo", 100);
 		distanceTraveled = prefs.getFloat("distanceTraveled", 0);
 		globalSpeed = prefs.getFloat("globalSpeed", 0);
 		maxCurrentSpeed = prefs.getFloat("maxCurrentSpeed", 0);
 		globalSpeedBonus = prefs.getFloat("globalSpeedBonus", 0);
+        maxSpeed = prefs.getFloat("maxSpeed", 0);
 	}
+
+    private void saveGameData() {
+        prefs.putInteger("currentSector", currentSector);
+        prefs.putFloat("distanceToGo", distanceToGo);
+        prefs.putFloat("distanceTraveled", distanceTraveled);
+        prefs.putFloat("globalSpeed", globalSpeed);
+        prefs.putFloat("distanceToGo", distanceToGo);
+        prefs.putFloat("maxCurrentSpeed", maxCurrentSpeed);
+        prefs.putFloat("globalSpeedBonus", globalSpeedBonus);
+        prefs.putFloat("maxSpeed", maxSpeed);
+
+        prefs.flush();
+    }
+
+    private void createBasicSkin(){
+        //Create a font
+        BitmapFont font = new BitmapFont();
+        skin = new Skin();
+        skin.add("default", font);
+
+        //Create a texture
+        Pixmap pixmap = new Pixmap((int)Gdx.graphics.getWidth()/4,(int)Gdx.graphics.getHeight()/10, Pixmap.Format.RGB888);
+        pixmap.setColor(Color.WHITE);
+        pixmap.fill();
+        skin.add("background",new Texture(pixmap));
+
+        //Create a button style
+        TextButton.TextButtonStyle textButtonStyle = new TextButton.TextButtonStyle();
+        textButtonStyle.up = skin.newDrawable("background", Color.GRAY);
+        textButtonStyle.down = skin.newDrawable("background", Color.DARK_GRAY);
+        textButtonStyle.checked = skin.newDrawable("background", Color.DARK_GRAY);
+        textButtonStyle.over = skin.newDrawable("background", Color.LIGHT_GRAY);
+        textButtonStyle.font = skin.getFont("default");
+        skin.add("default", textButtonStyle);
+    }
+
 	private void spawnAsteroids(boolean atTop) {
 		if (MathUtils.random(0, 3) == 0) {
 			int asteroidNum = MathUtils.random(1, 10);
@@ -259,8 +298,20 @@ public class SwipeShipMain implements ApplicationListener {
 		projectiles.add(p);
 	}
 
+    private void displayMainMenu() {
+        Stage stage = new Stage();
+        Gdx.input.setInputProcessor(stage);
+        createBasicSkin();
+        TextButton newGameButton = new TextButton("New game", skin);
+        newGameButton.setPosition(Gdx.graphics.getWidth() / 2 - Gdx.graphics.getWidth() / 8, Gdx.graphics.getHeight() / 2);
+        stage.addActor(newGameButton);
+        stage.act();
+        stage.draw();
+    }
+
 	@Override
 	public void render() {
+
 		// clear the screen with a dark blue color. The
 		// arguments to glClearColor are the red, green
 		// blue and alpha component in the range [0,1]
@@ -351,7 +402,20 @@ public class SwipeShipMain implements ApplicationListener {
 				Gdx.app.debug("render", "spaceship touched!");
 				spawnProjectile();
 			}
-		}
+            if (isTouched (x, y, powerups.get(2)))
+            {
+                //thrustShip(5);
+                if (isPaused) isPaused = false; else isPaused = true;
+
+
+            }
+
+        }
+        if (isPaused) {
+            displayMainMenu();
+            return;
+        }
+
 		if(Gdx.input.isTouched()) {
 			int x = Gdx.input.getX();
 			int y = Gdx.input.getY();
@@ -385,13 +449,10 @@ public class SwipeShipMain implements ApplicationListener {
 				Gdx.app.debug("render", "power-up 1 pressed");
 				powerupSound.play();
 			}
-			if (isTouched (x, y, powerups.get(2)))
-			{
-				thrustShip(5);
-			}
 
 		}
-		if(Gdx.input.isKeyPressed(Keys.LEFT)) sx -= 200 * Gdx.graphics.getDeltaTime();
+
+        if(Gdx.input.isKeyPressed(Keys.LEFT)) sx -= 200 * Gdx.graphics.getDeltaTime();
 		if (globalSpeed > 500)
 		{
 			spawnAsteroids(true);
@@ -510,17 +571,7 @@ public class SwipeShipMain implements ApplicationListener {
 		saveGameData();
 	}
 
-	private void saveGameData() {
-		prefs.putInteger("currentSector", currentSector);
-		prefs.putFloat("distanceToGo", distanceToGo);
-		prefs.putFloat("distanceTraveled", distanceTraveled);
-		prefs.putFloat("globalSpeed", globalSpeed);
-		prefs.putFloat("distanceToGo", distanceToGo);
-		prefs.putFloat("maxCurrentSpeed", maxCurrentSpeed);
-		prefs.putFloat("globalSpeedBonus", globalSpeedBonus);
 
-		prefs.flush();
-	}
 	public void thrustShip(float d) {
 		Gdx.app.debug("thrustShip", "d:" + d);
 		if (globalSpeed + d*2000 > maxCurrentSpeed) maxCurrentSpeed = (globalSpeed + d*2000);
@@ -595,9 +646,11 @@ public class SwipeShipMain implements ApplicationListener {
 
 	@Override
 	public void pause() {
-	}
+        saveGameData();
+    }
 
 	@Override
 	public void resume() {
+        loadSavedData();
 	}
 }
