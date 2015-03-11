@@ -1,0 +1,17 @@
+2-24-2015
+Move all game logic from GameScreen.java to SwipeShipMain.java
+need to separate MainMenuScreen and GameScreen and the game logic
+
+2-26-2015
+Re-do menu screen when paused
+
+3-8-2015
+Menu is being redrawn each cycle due to render() in main loop when the 3rd button is pressed...
+
+follow guide here
+http://www.toxsickproductions.com/libgdx/libgdx-basics-create-a-simple-menu/
+Use MainMenu.java as temporary sandbox
+
+3-10-2015
+Code the logic in button listeners in MainMenu.java (and ditch MainMenuScreen.java, or rename)
+
