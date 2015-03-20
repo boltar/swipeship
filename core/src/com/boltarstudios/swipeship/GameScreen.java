@@ -83,7 +83,7 @@ public class GameScreen implements Screen {
     private Array<Sprite> powerups;
     private Sprite spaceshipSprite;
     private Sprite blastSprite;
-    private boolean isPaused = false;
+
     private Skin skin;
     private Stage stage;
     public GameScreen(final SwipeShipMain gam) {
@@ -266,7 +266,11 @@ public class GameScreen implements Screen {
     }
 
     private void displayMainMenu() {
-        game.setScreen(game.mainMenuScreen);
+        game.setScreen(game.menuScreen);
+    }
+
+    private void clearMainMenu() {
+        game.setScreen(this);
     }
 
     @Override
@@ -362,14 +366,12 @@ public class GameScreen implements Screen {
             }
             if (isTouched(x, y, powerups.get(2))) {
                 //thrustShip(5);
-                if (isPaused) isPaused = false;
-                else isPaused = true;
-
-
+                if (game.isPaused()) game.setPaused(false);
+                else game.setPaused(true);
             }
 
         }
-        if (isPaused) {
+        if (game.isPaused()) {
             displayMainMenu();
             return;
         }

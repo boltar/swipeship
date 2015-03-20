@@ -8,7 +8,6 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.boltarstudios.swipeship.MainMenuScreen;
 
 public class SwipeShipMain extends Game {
 
@@ -23,12 +22,15 @@ public class SwipeShipMain extends Game {
     public Preferences prefs;
     SpriteBatch batch;
     BitmapFont font;
+    private boolean isPaused = false;
+
     public static final int VIRTUAL_WIDTH = 720;
     public static final int VIRTUAL_HEIGHT = 1280;
     public static final float ASPECT_RATIO =
             (float)VIRTUAL_HEIGHT/(float)VIRTUAL_WIDTH;
     public static boolean isNewGame = false;
-    public Screen mainMenuScreen;
+    public Screen menuScreen;
+    public Screen gameScreen;
 
     public void create() {
         batch = new SpriteBatch();
@@ -37,9 +39,10 @@ public class SwipeShipMain extends Game {
         font.setColor(Color.WHITE);
         font.setScale(2);
         loadSavedData();
-        //mainMenuScreen = new MainMenuScreen(this);
-        mainMenuScreen = new MainMenu();
-        this.setScreen(new GameScreen(this));
+        menuScreen = new MainMenu(this);
+        gameScreen = new GameScreen(this);
+
+        this.setScreen(gameScreen);
     }
 
 
@@ -48,6 +51,14 @@ public class SwipeShipMain extends Game {
         if (globalSpeed + d*2000 > maxCurrentSpeed) maxCurrentSpeed = (globalSpeed + d*2000);
         globalSpeed += d*2000;
         if (globalSpeed + globalSpeedBonus > maxSpeed) maxSpeed = globalSpeed + globalSpeedBonus;
+    }
+
+    public boolean isPaused() {
+        return isPaused;
+    }
+
+    public void setPaused(boolean isPaused) {
+        this.isPaused = isPaused;
     }
 
     public void render() {

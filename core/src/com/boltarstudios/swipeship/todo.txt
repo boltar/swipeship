@@ -15,3 +15,10 @@ Use MainMenu.java as temporary sandbox
 3-10-2015
 Code the logic in button listeners in MainMenu.java (and ditch MainMenuScreen.java, or rename)
 
+3-19-2015
+Why does the game not resume after hitting 'play' in menu?
+Probably because something isn't being set up right when we switch screens
+MainMenu -> GameScreen
+
+setInputProcessor isn't being called on screen switches... is this a problem?
+
