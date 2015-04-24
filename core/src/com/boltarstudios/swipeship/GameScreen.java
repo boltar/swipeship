@@ -69,7 +69,6 @@ public class GameScreen implements Screen {
     private Music bgMusic;
     private OrthographicCamera camera;
     //private MyRect spaceship;
-    //private Array<MyRect> raindrops;
     private Array<StellarObject> planets;
     private Array<StellarObject> asteroids;
     private Array<StellarObject> nebulas;
@@ -86,6 +85,7 @@ public class GameScreen implements Screen {
 
     private Skin skin;
     private Stage stage;
+    private GestureDetector gestureDetector;
     public GameScreen(final SwipeShipMain gam) {
         this.game = gam;
         // load the images for the droplet and the spaceship, 64x64 pixels each
@@ -99,8 +99,6 @@ public class GameScreen implements Screen {
 
         spaceshipSprite = new Sprite(spaceshipImage);
         blastSprite = new Sprite(blastImage);
-        // load the drop sound effect and the rain background "music"
-        dropSound = Gdx.audio.newSound(Gdx.files.internal("drop.wav"));
         powerupSound = Gdx.audio.newSound(Gdx.files.internal("sd_0.wav"));
         bgMusic = Gdx.audio.newMusic(Gdx.files.internal("bg_music.wav"));
 
@@ -126,9 +124,8 @@ public class GameScreen implements Screen {
         spaceshipSprite.setX(game.VIRTUAL_WIDTH / 2 - spaceshipImage.getWidth() / 2);
         spaceshipSprite.setY(20);
 
-        // create the raindrops array and spawn the first raindrop
-        //raindrops = new Array<MyRect>();
-        Gdx.input.setInputProcessor(new GestureDetector(new MyGestureListener(game)));
+        GestureDetector gestureDetector = new GestureDetector((new MyGestureListener(game)));
+
 
         planets = new Array<StellarObject>();
         asteroids = new Array<StellarObject>();
@@ -249,24 +246,9 @@ public class GameScreen implements Screen {
         projectiles.add(p);
     }
 
-    private void displayMainMenu_x() {
-        Gdx.input.setInputProcessor(stage);
-        final TextButton newGameButton = new TextButton("New game", skin);
-        newGameButton.setPosition(Gdx.graphics.getWidth() / 2 - Gdx.graphics.getWidth() / 8, Gdx.graphics.getHeight() / 2);
-        newGameButton.addListener(new ChangeListener() {
-            public void changed (ChangeListener.ChangeEvent event, Actor actor) {
-                System.out.println("Clicked! Is checked: " + newGameButton.isChecked());
-                newGameButton.setText("Good job!");
-                newGameButton.setVisible(false);
-            }
-        });
-        stage.addActor(newGameButton);
-        stage.act();
-        stage.draw();
-    }
-
     private void displayMainMenu() {
-        game.setScreen(game.menuScreen);
+        //game.setScreen(game.menuScreen);
+        game.setScreen(new MainMenu(game));
     }
 
     private void clearMainMenu() {
@@ -568,7 +550,7 @@ public class GameScreen implements Screen {
 
     @Override
     public void show() {
-
+        Gdx.input.setInputProcessor(gestureDetector);
     }
 
     @Override

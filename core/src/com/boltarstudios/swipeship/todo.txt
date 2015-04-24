@@ -22,3 +22,11 @@ MainMenu -> GameScreen
 
 setInputProcessor isn't being called on screen switches... is this a problem?
 
+4-3-2015
+Look at the code example from
+Development/gdx-ui-app
+for screen transitions
+
+4-23-2015
+Figured it out by just creating a new MainMenu
+

@@ -36,7 +36,7 @@ public class MainMenu implements Screen {
         createBasicSkin();
         buttonPlay = new TextButton("Play", skin);
         buttonExit = new TextButton("Exit", skin);
-        title = new Label("Game Title",skin);
+        title = new Label("Swipe Ship",skin);
         this.game = game;
 
         buttonPlay.addListener(new ClickListener(){
@@ -105,6 +105,7 @@ public class MainMenu implements Screen {
         //Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         stage.act();
         stage.draw();
+
     }
 
     @Override

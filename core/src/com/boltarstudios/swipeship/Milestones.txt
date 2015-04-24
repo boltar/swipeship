@@ -1,0 +1,26 @@
+Milestone 1
+Implement menu screen (just be able to switch between main and menu screen)
+Done - 4/23/2015
+
+Milestone 2
+Implement the following actions in menu
+- Restart
+- Resume
+- Exit
+
+Milestone 3
+Implement distance traveled during game exit based on time elapsed
+
+Milestone 4
+Implement UI to buy powerups
+
+Milestone 5
+Implement coin / money system to buy powerups
+    - Gain gold after each sector advance
+Powerup 1: Boost global speed
+Powerup 2: Initial speed at sector begin
+Powerup 3: Speed decay decreased
+Powerup 4: Increased gold gains
+Powerup 4: Restart keeping powerups
+
+
