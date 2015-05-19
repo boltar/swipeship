@@ -82,6 +82,8 @@ public class GameScreen implements Screen {
     private Array<Sprite> powerups;
     private Sprite spaceshipSprite;
     private Sprite blastSprite;
+    private         long startTime = 0;
+
 
     private Skin skin;
     private Stage stage;
@@ -201,7 +203,7 @@ public class GameScreen implements Screen {
                 a.spawnRandomX(game.VIRTUAL_WIDTH, (int) MathUtils.random(a.getSprite().getHeight(), game.VIRTUAL_HEIGHT));
             }
 
-            Gdx.app.debug("spawnAsteroids", "spawning asteroid " + asteroidNum + ", speed " + a.getSpeed());
+//            Gdx.app.debug("spawnAsteroids", "spawning asteroid " + asteroidNum + ", speed " + a.getSpeed());
             asteroids.add(a);
         }
     }
@@ -217,7 +219,7 @@ public class GameScreen implements Screen {
                 //a.spawn(game.VIRTUAL_WIDTH, MathUtils.random(a.getRect().height, game.VIRTUAL_HEIGHT));
                 a.spawnRandomX(game.VIRTUAL_WIDTH, (int) MathUtils.random(a.getSprite().getHeight(), game.VIRTUAL_HEIGHT));
             }
-            Gdx.app.debug("spawnPlanets", "spawning planet " + a.getImageName() + ", speed " + a.getSpeed());
+//            Gdx.app.debug("spawnPlanets", "spawning planet " + a.getImageName() + ", speed " + a.getSpeed());
             planets.add(a);
         }
     }
@@ -234,7 +236,7 @@ public class GameScreen implements Screen {
         } else {
             a.spawnRandomX(game.VIRTUAL_WIDTH, (int) MathUtils.random(a.getSprite().getHeight(), game.VIRTUAL_HEIGHT));
         }
-        Gdx.app.debug("spawnNebula", "spawning nebula " + a.getImageName() + ", speed " + a.getSpeed());
+//        Gdx.app.debug("spawnNebula", "spawning nebula " + a.getImageName() + ", speed " + a.getSpeed());
         nebulas.add(a);
     }
 
@@ -257,7 +259,6 @@ public class GameScreen implements Screen {
 
     @Override
     public void render(float delta) {
-
         // clear the screen with a dark blue color. The
         // arguments to glClearColor are the red, green
         // blue and alpha component in the range [0,1]
@@ -416,9 +417,11 @@ public class GameScreen implements Screen {
         nanoTimeSum += (currNanoTime - prevNanoTime);
 
         //Gdx.app.debug("render", "nanoTimeSum: " + nanoTimeSum + ", currNanoTime " + currNanoTime + ", prevNanoTime " + prevNanoTime);
-        if (nanoTimeSum > 1000000) // 1ms
+        if (nanoTimeSum > 1000000000) // 1ms
         {
             nanoTimeSum = 0;
+            if (game.globalSpeedBonus - 100 >= 0)
+                game.globalSpeedBonus = game.globalSpeedBonus - 100;
 
         }
         // check if we need to create a new Stellar Object
@@ -434,7 +437,7 @@ public class GameScreen implements Screen {
                         (int) (planet.getSpeed() * (game.globalSpeed / 10000) * Gdx.graphics.getDeltaTime()));
 
                 if (planet.getSprite().getY() + planet.getSprite().getHeight() < 0) {
-                    Gdx.app.debug("render", "removing planet " + planet.getImageName());
+//                    Gdx.app.debug("render", "removing planet " + planet.getImageName());
                     iter2.remove();
                     planet.getImage().dispose();
                     planetPool.free(planet);
@@ -448,7 +451,7 @@ public class GameScreen implements Screen {
                         (int) (asteroid.getSpeed() *
                                 (game.globalSpeed / 1000) * Gdx.graphics.getDeltaTime()));
                 if (asteroid.getSprite().getY() + asteroid.getSprite().getHeight() < 0) {
-                    Gdx.app.debug("render", "removing asteroid " + asteroid.getImageName());
+//                    Gdx.app.debug("render", "removing asteroid " + asteroid.getImageName());
                     iter3.remove();
                     asteroid.getImage().dispose();
                     asteroidPool.free(asteroid);
@@ -462,7 +465,7 @@ public class GameScreen implements Screen {
                         (int) (nebula.getSpeed() * (game.globalSpeed / 10000)
                                 * Gdx.graphics.getDeltaTime()));
                 if (nebula.getSprite().getY() + nebula.getSprite().getHeight() < 0) {
-                    Gdx.app.debug("render", "removing nebula " + nebula.getImageName());
+//                    Gdx.app.debug("render", "removing nebula " + nebula.getImageName());
                     iter4.remove();
                     nebula.getImage().dispose();
                     nebulaPool.free(nebula);
@@ -470,10 +473,12 @@ public class GameScreen implements Screen {
                 }
             }
             //globalSpeed = (float) Math.sqrt((double) globalSpeed);
-            game.distanceTraveled += game.globalSpeed / 1000 * Gdx.graphics.getDeltaTime();
+            Gdx.app.debug("render", "gs: " + game.globalSpeed / 1000 + ", total:" +
+                    game.globalSpeed / 1000 * Gdx.graphics.getDeltaTime());
+            game.distanceTraveled += game.globalSpeed / 100 * Gdx.graphics.getDeltaTime();
 
-            game.globalSpeed = game.globalSpeed * .95f;
-            if (game.globalSpeedBonus > 0) game.globalSpeedBonus--;
+            game.globalSpeed = (game.globalSpeed * .95f);
+            //if (game.globalSpeedBonus > 0) game.globalSpeedBonus--;
             if (game.globalSpeed <= 1.05 + game.globalSpeedBonus) {
                 game.globalSpeed = game.globalSpeedBonus;
                 game.maxCurrentSpeed = game.globalSpeedBonus;
@@ -488,7 +493,7 @@ public class GameScreen implements Screen {
                             Gdx.graphics.getDeltaTime() *
                             (1 + (float) projectile.getSprite().getY() / (float) game.VIRTUAL_HEIGHT)));
             if (projectile.getSprite().getY() > game.VIRTUAL_HEIGHT) {
-                Gdx.app.debug("render", "removing projectile " + projectile.getImageName());
+//                Gdx.app.debug("render", "removing projectile " + projectile.getImageName());
                 projectile_iter.remove();
                 projectile.getImage().dispose();
                 projectilePool.free(projectile);
@@ -550,7 +555,10 @@ public class GameScreen implements Screen {
 
     @Override
     public void show() {
+
         Gdx.input.setInputProcessor(gestureDetector);
+        Gdx.app.debug("Game", "GameScreen show()");
+
     }
 
     @Override
@@ -566,6 +574,8 @@ public class GameScreen implements Screen {
         dropSound.dispose();
         bgMusic.dispose();
         batch.dispose();
+
+        Gdx.app.debug("Game", "GameScreen dispose()");
     }
 
     @Override
@@ -577,11 +587,16 @@ public class GameScreen implements Screen {
 
     @Override
     public void pause() {
+
         game.saveGameData();
+        Gdx.app.debug("Game", "GameScreen pause()");
+
     }
 
     @Override
     public void resume() {
+
         game.loadSavedData();
+        Gdx.app.debug("Game", "GameScreen resume()");
     }
 }
