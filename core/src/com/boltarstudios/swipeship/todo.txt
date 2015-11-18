@@ -51,3 +51,6 @@ Todo: Add special cases for:
 
 5-10-2015
 Figure out why the screen flickers
+
+5-18-2015
+Louse Sprite destruction via shooting

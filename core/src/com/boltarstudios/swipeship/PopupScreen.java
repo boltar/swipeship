@@ -3,6 +3,7 @@ package com.boltarstudios.swipeship;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -84,6 +85,8 @@ public class PopupScreen implements Screen {
 
     @Override
     public void render(float delta) {
+        Gdx.graphics.getGL20().glClearColor( 0, 0, 0, 1 );
+        Gdx.graphics.getGL20().glClear( GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT );
         stage.act();
         stage.draw();
 
@@ -95,6 +98,7 @@ public class PopupScreen implements Screen {
 
     @Override
     public void show() {
+        Gdx.app.debug("startup", "PopupScreen show()");
         Gdx.input.setInputProcessor(stage);
     }
 

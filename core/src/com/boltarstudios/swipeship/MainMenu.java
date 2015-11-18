@@ -112,7 +112,7 @@ public class MainMenu implements Screen {
     @Override
     public void show() {
 
-
+        Gdx.app.debug("startup", "MainMenu show()");
         Gdx.input.setInputProcessor(stage);
     }
 

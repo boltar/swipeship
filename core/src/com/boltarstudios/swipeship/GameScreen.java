@@ -8,6 +8,7 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
@@ -63,7 +64,6 @@ public class GameScreen implements Screen {
     private Texture dustImage1;
     private Texture dustImage2;
     private Texture dustImage3;
-    private Sound dropSound;
     private Sound blastSound;
     private Sound powerupSound;
     private Music bgMusic;
@@ -82,7 +82,8 @@ public class GameScreen implements Screen {
     private Array<Sprite> powerups;
     private Sprite spaceshipSprite;
     private Sprite blastSprite;
-    private         long startTime = 0;
+    private long startTime = 0;
+    private Sprite louseSprite;
 
 
     private Skin skin;
@@ -99,10 +100,12 @@ public class GameScreen implements Screen {
         dustImage3 = new Texture(Gdx.files.internal("dust3.png"));
         blastImage = new Texture(Gdx.files.internal("fire_green1.png"));
 
+
         spaceshipSprite = new Sprite(spaceshipImage);
         blastSprite = new Sprite(blastImage);
         powerupSound = Gdx.audio.newSound(Gdx.files.internal("sd_0.wav"));
         bgMusic = Gdx.audio.newMusic(Gdx.files.internal("bg_music.wav"));
+        louseSprite = new Sprite(new Texture(Gdx.files.internal("louse.png")));
 
         // start the playback of the background music immediately
         //bgMusic.setLooping(true);
@@ -248,10 +251,6 @@ public class GameScreen implements Screen {
         projectiles.add(p);
     }
 
-    private void displayMainMenu() {
-        //game.setScreen(game.menuScreen);
-        game.setScreen(new MainMenu(game));
-    }
 
     private void clearMainMenu() {
         game.setScreen(this);
@@ -326,6 +325,14 @@ public class GameScreen implements Screen {
         powerups.get(1).draw(batch);
         powerups.get(2).draw(batch);
 
+        if (MathUtils.random(0, 3) != 0) {
+            louseSprite.setX(game.VIRTUAL_WIDTH / 4 * MathUtils.random(0, 3));
+            louseSprite.setY(game.VIRTUAL_HEIGHT - 100);
+            louseSprite.draw(batch);
+        }
+        else {
+
+        }
         //batch.draw(spaceshipImage, spaceship.x, spaceship.y);
         spaceshipSprite.draw(batch);
         if (game.globalSpeed > 500) {
@@ -355,7 +362,7 @@ public class GameScreen implements Screen {
 
         }
         if (game.isPaused()) {
-            displayMainMenu();
+            game.setScreen(new MainMenu(game));
             return;
         }
 
@@ -473,7 +480,7 @@ public class GameScreen implements Screen {
                 }
             }
             //globalSpeed = (float) Math.sqrt((double) globalSpeed);
-            Gdx.app.debug("render", "gs: " + game.globalSpeed / 1000 + ", total:" +
+            Gdx.app.debug("render", "gs: " + game.globalSpeed + ", bonus: " + game.globalSpeedBonus + ", total:" +
                     game.globalSpeed / 1000 * Gdx.graphics.getDeltaTime());
             game.distanceTraveled += game.globalSpeed / 100 * Gdx.graphics.getDeltaTime();
 
@@ -483,6 +490,7 @@ public class GameScreen implements Screen {
                 game.globalSpeed = game.globalSpeedBonus;
                 game.maxCurrentSpeed = game.globalSpeedBonus;
             }
+            if (game.globalSpeed < 0.1f) game.globalSpeed = 0;
         }
 
         Iterator<StellarObject> projectile_iter = projectiles.iterator();
@@ -571,9 +579,10 @@ public class GameScreen implements Screen {
         // dispose of all the native resources
         dropImage.dispose();
         spaceshipImage.dispose();
-        dropSound.dispose();
         bgMusic.dispose();
         batch.dispose();
+        stage.dispose();
+        skin.dispose();
 
         Gdx.app.debug("Game", "GameScreen dispose()");
     }

@@ -41,13 +41,13 @@ public class SwipeShipMain extends Game {
         font.setColor(Color.WHITE);
         font.setScale(2);
         loadSavedData();
-        menuScreen = new MainMenu(this);
-        gameScreen = new GameScreen(this);
-
         gameResumeMaintenance();
 
         //this.setScreen(gameScreen);
         this.setScreen(popupScreen);
+        menuScreen = new MainMenu(this);
+        gameScreen = new GameScreen(this);
+
     }
 
 
@@ -73,6 +73,7 @@ public class SwipeShipMain extends Game {
     public void dispose() {
         batch.dispose();
         font.dispose();
+        gameScreen.dispose();
         Gdx.app.debug("SwipeShipMain", "SwipeShipMain dispose");
 
     }

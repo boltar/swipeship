@@ -11,6 +11,7 @@ Done - 4/23/2015
 
 Milestone 3
 Implement distance traveled during game exit based on time elapsed
+Done - 5/10/2015
 
 Milestone 4
 Implement UI to buy powerups
