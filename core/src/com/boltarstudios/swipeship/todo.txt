@@ -54,3 +54,6 @@ Figure out why the screen flickers
 
 5-18-2015
 Louse Sprite destruction via shooting
+
+1-5-2016
+Put louse destruction on hold. Add coins for monies.

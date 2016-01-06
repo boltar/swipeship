@@ -83,7 +83,7 @@ public class GameScreen implements Screen {
     private Sprite spaceshipSprite;
     private Sprite blastSprite;
     private long startTime = 0;
-    private Sprite louseSprite;
+//    private Sprite louseSprite;
 
 
     private Skin skin;
@@ -105,7 +105,7 @@ public class GameScreen implements Screen {
         blastSprite = new Sprite(blastImage);
         powerupSound = Gdx.audio.newSound(Gdx.files.internal("sd_0.wav"));
         bgMusic = Gdx.audio.newMusic(Gdx.files.internal("bg_music.wav"));
-        louseSprite = new Sprite(new Texture(Gdx.files.internal("louse.png")));
+//        louseSprite = new Sprite(new Texture(Gdx.files.internal("louse.png")));
 
         // start the playback of the background music immediately
         //bgMusic.setLooping(true);
@@ -325,6 +325,7 @@ public class GameScreen implements Screen {
         powerups.get(1).draw(batch);
         powerups.get(2).draw(batch);
 
+/*
         if (MathUtils.random(0, 3) != 0) {
             louseSprite.setX(game.VIRTUAL_WIDTH / 4 * MathUtils.random(0, 3));
             louseSprite.setY(game.VIRTUAL_HEIGHT - 100);
@@ -333,6 +334,7 @@ public class GameScreen implements Screen {
         else {
 
         }
+*/
         //batch.draw(spaceshipImage, spaceship.x, spaceship.y);
         spaceshipSprite.draw(batch);
         if (game.globalSpeed > 500) {
@@ -372,9 +374,9 @@ public class GameScreen implements Screen {
             float r = (float) Gdx.graphics.getWidth() / (float) game.VIRTUAL_WIDTH; // scale X and Y will be same
             int spaceshipWidth = (int) (spaceshipSprite.getWidth() * r);
             int buffer = 5;
-            Gdx.app.debug("render", "touched : " + x + ", " + y + ", ship (" + sx + ", " + sy + "), r:" + r);
-            Gdx.app.debug("render", "sprite x: " + spaceshipSprite.getX() + ", sprite y: " + spaceshipSprite.getY() +
-                    ", width: " + spaceshipSprite.getWidth() + ", textureWidth: " + spaceshipSprite.getWidth());
+//            Gdx.app.debug("render", "touched : " + x + ", " + y + ", ship (" + sx + ", " + sy + "), r:" + r);
+//            Gdx.app.debug("render", "sprite x: " + spaceshipSprite.getX() + ", sprite y: " + spaceshipSprite.getY() +
+//                    ", width: " + spaceshipSprite.getWidth() + ", textureWidth: " + spaceshipSprite.getWidth());
 
             Vector3 touchPos = new Vector3();
             touchPos.set(x, y, 0);
@@ -480,8 +482,8 @@ public class GameScreen implements Screen {
                 }
             }
             //globalSpeed = (float) Math.sqrt((double) globalSpeed);
-            Gdx.app.debug("render", "gs: " + game.globalSpeed + ", bonus: " + game.globalSpeedBonus + ", total:" +
-                    game.globalSpeed / 1000 * Gdx.graphics.getDeltaTime());
+//            Gdx.app.debug("render", "gs: " + game.globalSpeed + ", bonus: " + game.globalSpeedBonus + ", total:" +
+//                    game.globalSpeed / 1000 * Gdx.graphics.getDeltaTime());
             game.distanceTraveled += game.globalSpeed / 100 * Gdx.graphics.getDeltaTime();
 
             game.globalSpeed = (game.globalSpeed * .95f);
@@ -528,12 +530,12 @@ public class GameScreen implements Screen {
         int transY = Gdx.graphics.getHeight() - touchY;
         transY = transY * game.VIRTUAL_HEIGHT / Gdx.graphics.getHeight();
 
-        Gdx.app.debug("isTouched", "touchX " + touchX + ", touchY " + touchY +
-                ", transX " + transX + ", transY " + transY);
+//        Gdx.app.debug("isTouched", "touchX " + touchX + ", touchY " + touchY +
+//                ", transX " + transX + ", transY " + transY);
 
         if ((transX >= sprite.getX() && transX <= sprite.getX() + sprite.getWidth()) &&
                 (transY >= sprite.getY() && transY <= sprite.getY() + sprite.getHeight())) {
-            Gdx.app.debug("isTouched", "touched sprite ");
+//            Gdx.app.debug("isTouched", "touched sprite ");
             return true;
         }
 
@@ -551,10 +553,10 @@ public class GameScreen implements Screen {
         int transY = Gdx.graphics.getHeight() - touchY;
         transY = transY * game.VIRTUAL_HEIGHT / Gdx.graphics.getHeight();
 
-        Gdx.app.debug("isTouched", " touchY " + touchY + ", transY " + transY);
+//        Gdx.app.debug("isTouched", " touchY " + touchY + ", transY " + transY);
 
         if (transY >= sprite.getY() && transY <= sprite.getY() + sprite.getHeight()) {
-            Gdx.app.debug("isTouched", "touched sprite ");
+//            Gdx.app.debug("isTouched", "touched sprite ");
             return true;
         }
 

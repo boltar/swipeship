@@ -52,7 +52,7 @@ public class SwipeShipMain extends Game {
 
 
     public void thrustShip(float d) {
-        Gdx.app.debug("thrustShip", "d:" + d);
+//        Gdx.app.debug("thrustShip", "d:" + d);
         if (globalSpeed + d*2000 > maxCurrentSpeed) maxCurrentSpeed = (long)(globalSpeed + d*2000);
         globalSpeed += d*2000;
         if (globalSpeed + globalSpeedBonus > maxSpeed) maxSpeed = (long) (globalSpeed + globalSpeedBonus);

@@ -18,12 +18,13 @@ public class MyGestureListener implements GestureDetector.GestureListener {
         super();
         blastSound = Gdx.audio.newSound((Gdx.files.internal("space_blaster.mp3")));
         Gdx.app.setLogLevel(Application.LOG_DEBUG);
+        Gdx.app.debug("Gesture", "constructor");
         this.game = game;
 
     }
     @Override
     public boolean touchDown(float x, float y, int pointer, int button) {
-
+        Gdx.app.debug("Gesture", "touchDown");
         return false;
     }
 
@@ -35,7 +36,7 @@ public class MyGestureListener implements GestureDetector.GestureListener {
 
     @Override
     public boolean longPress(float x, float y) {
-
+        Gdx.app.debug("Gesture", "longPress");
         return false;
     }
 
