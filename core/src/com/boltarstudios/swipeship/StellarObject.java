@@ -17,8 +17,8 @@ public class StellarObject implements Pool.Poolable {
     private boolean isVisible;
     private int speed;
     private Texture image;
-        private Sprite sprite;
-        private String imageName;
+    private Sprite sprite;
+    private String imageName;
 
     public StellarObject() {
         isVisible = false;

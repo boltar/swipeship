@@ -44,6 +44,12 @@ public class GameScreen implements Screen {
             return new Asteroid();
         }
     };
+    private final Pool<StellarObject> coinPool = new Pool<StellarObject>() {
+        @Override
+        protected StellarObject newObject() {
+            return new Coin();
+        }
+    };
     private final Pool<StellarObject> planetPool = new Pool<StellarObject>() {
         @Override
         protected StellarObject newObject() {
@@ -60,7 +66,6 @@ public class GameScreen implements Screen {
     private Texture dropImage;
     private Texture spaceshipImage;
     private Texture jetImage;
-    private Texture blastImage;
     private Texture dustImage1;
     private Texture dustImage2;
     private Texture dustImage3;
@@ -73,6 +78,7 @@ public class GameScreen implements Screen {
     private Array<StellarObject> asteroids;
     private Array<StellarObject> nebulas;
     private Array<StellarObject> projectiles;
+    private Array<StellarObject> coins;
     private Texture sunImage, exoPlanetImage, exoPlanet2Image, gasGiantImage;
     private long lastDropTime;
     private Rectangle viewport;
@@ -81,7 +87,6 @@ public class GameScreen implements Screen {
     private long nanoTimeSum;
     private Array<Sprite> powerups;
     private Sprite spaceshipSprite;
-    private Sprite blastSprite;
     private long startTime = 0;
 //    private Sprite louseSprite;
 
@@ -98,11 +103,8 @@ public class GameScreen implements Screen {
         dustImage1 = new Texture(Gdx.files.internal("dust1.png"));
         dustImage2 = new Texture(Gdx.files.internal("dust2.png"));
         dustImage3 = new Texture(Gdx.files.internal("dust3.png"));
-        blastImage = new Texture(Gdx.files.internal("fire_green1.png"));
-
 
         spaceshipSprite = new Sprite(spaceshipImage);
-        blastSprite = new Sprite(blastImage);
         powerupSound = Gdx.audio.newSound(Gdx.files.internal("sd_0.wav"));
         bgMusic = Gdx.audio.newMusic(Gdx.files.internal("bg_music.wav"));
 //        louseSprite = new Sprite(new Texture(Gdx.files.internal("louse.png")));
@@ -136,12 +138,16 @@ public class GameScreen implements Screen {
         asteroids = new Array<StellarObject>();
         nebulas = new Array<StellarObject>();
         projectiles = new Array<StellarObject>();
+        coins = new Array<StellarObject>();
 
         for (int i = 0; i < 100; i++) {
             spawnAsteroids(false);
         }
         for (int i = 0; i < 20; i++) {
             spawnPlanets(false);
+        }
+        for (int i = 0; i < 20; i++) {
+            spawnCoins(false);
         }
         for (int i = 0; i < 1; i++) {
             spawnNebulas(false);
@@ -206,8 +212,24 @@ public class GameScreen implements Screen {
                 a.spawnRandomX(game.VIRTUAL_WIDTH, (int) MathUtils.random(a.getSprite().getHeight(), game.VIRTUAL_HEIGHT));
             }
 
-//            Gdx.app.debug("spawnAsteroids", "spawning asteroid " + asteroidNum + ", speed " + a.getSpeed());
+            Gdx.app.debug("spawnAsteroids", "spawning asteroid " + asteroidNum + ", speed " + a.getSpeed()
+                    + ", (" + a.getSprite().getX() + ", " + a.getSprite().getY() + ")");
             asteroids.add(a);
+        }
+    }
+    private void spawnCoins(boolean atTop) {
+        if (MathUtils.random(0, 2) == 0) {
+            StellarObject c = coinPool.obtain();
+            c.setImage("coin1.png");
+            //c.getSprite().setSize(game.VIRTUAL_WIDTH / 20, game.VIRTUAL_WIDTH / 20);
+            if (atTop) {
+                c.spawnRandomX(game.VIRTUAL_WIDTH, game.VIRTUAL_HEIGHT);
+            } else {
+                c.spawnRandomX(game.VIRTUAL_WIDTH, (int) MathUtils.random(c.getSprite().getHeight(), game.VIRTUAL_HEIGHT));
+            }
+            Gdx.app.debug("spawnCoins", "spawning coin " + ", speed " + c.getSpeed() + ", (" + c.getSprite().getX()
+                    + ", " + c.getSprite().getY() + ")");
+            coins.add(c);
         }
     }
 
@@ -304,6 +326,11 @@ public class GameScreen implements Screen {
             }
         }
         for (StellarObject stellarObject : projectiles) {
+            if (stellarObject.isVisible()) {
+                stellarObject.getSprite().draw(batch);
+            }
+        }
+        for (StellarObject stellarObject : coins) {
             if (stellarObject.isVisible()) {
                 stellarObject.getSprite().draw(batch);
             }
@@ -406,6 +433,7 @@ public class GameScreen implements Screen {
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) sx -= 200 * Gdx.graphics.getDeltaTime();
         if (game.globalSpeed > 500) {
             spawnAsteroids(true);
+            spawnCoins(true);
         }
         if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) sx += 200 * Gdx.graphics.getDeltaTime();
 
@@ -481,6 +509,21 @@ public class GameScreen implements Screen {
                     spawnNebulas(true);
                 }
             }
+
+            Iterator<StellarObject> iter5 = coins.iterator();
+            while (iter5.hasNext()) {
+                StellarObject coin = iter5.next();
+                coin.setRectPos(coin.getSprite().getX(), coin.getSprite().getY() -
+                        (int) (coin.getSpeed() *
+                                (game.globalSpeed / 1000) * Gdx.graphics.getDeltaTime()));
+                if (coin.getSprite().getY() + coin.getSprite().getHeight() < 0) {
+//                    Gdx.app.debug("render", "removing asteroid " + asteroid.getImageName());
+                    iter5.remove();
+                    coin.getImage().dispose();
+                    coinPool.free(coin);
+                }
+            }
+
             //globalSpeed = (float) Math.sqrt((double) globalSpeed);
 //            Gdx.app.debug("render", "gs: " + game.globalSpeed + ", bonus: " + game.globalSpeedBonus + ", total:" +
 //                    game.globalSpeed / 1000 * Gdx.graphics.getDeltaTime());

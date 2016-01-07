@@ -57,3 +57,8 @@ Louse Sprite destruction via shooting
 
 1-5-2016
 Put louse destruction on hold. Add coins for monies.
+
+1-6-2016
+Evenly distribute asteroids and coins (especially at the border of speed = 500)
+Add coin consumption
+Add coin total display
